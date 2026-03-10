@@ -1,47 +1,55 @@
 import os
-import sys
 import pandas as pd
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score
 
+
+DATA_DIR = "data"
+SUBMISSION_DIR = "submissions"
+
+
+def evaluate(submission_file, truth_file):
+
+    sub = pd.read_csv(submission_file)
+    truth = pd.read_csv(truth_file)
+
+    merged = sub.merge(truth, on="graph_index")
+
+    y_true = merged["target"]
+    y_pred = merged["prediction"] if "prediction" in merged else merged["target_y"]
+
+    return f1_score(y_true, y_pred)
 
 
 def main():
-    if len(sys.argv) < 2:
-        raise SystemExit("Usage: python scoring_script.py path/to/submission.csv")
 
-    submission_path = sys.argv[1]
+    ideal_sub = os.path.join(SUBMISSION_DIR, "ideal_submission.csv")
+    perturbed_sub = os.path.join(SUBMISSION_DIR, "perturbed_submission.csv")
 
-    data_dir = os.path.join("gnn_challenge", "data")
-    truth_path = os.path.join(data_dir, "test_labels_hidden.csv")
+    truth = os.path.join(DATA_DIR, "test_labels_hidden.csv")
 
-    sub = pd.read_csv(submission_path)
-    truth = pd.read_csv(truth_path)
+    if not os.path.exists(ideal_sub):
+        raise ValueError("ideal_submission.csv missing")
 
-    # Basic checks
-    required_sub_cols = {"filename", "prediction"}
-    required_truth_cols = {"filename", "target"}
+    if not os.path.exists(perturbed_sub):
+        raise ValueError("perturbed_submission.csv missing")
 
-    if not required_sub_cols.issubset(sub.columns):
-        raise ValueError(f"Submission must have columns {sorted(required_sub_cols)}")
-    if not required_truth_cols.issubset(truth.columns):
-        raise ValueError(f"Hidden labels must have columns {sorted(required_truth_cols)}")
+    f1_ideal = evaluate(ideal_sub, truth)
+    f1_perturbed = evaluate(perturbed_sub, truth)
 
-    # Merge by filename so row order doesn't matter
-    merged = sub.merge(truth, on="filename", how="inner")
+    robustness_gap = abs(f1_ideal - f1_perturbed)
 
-    if len(merged) != len(truth):
-        raise ValueError(
-            f"Filename mismatch. Matched {len(merged)} rows, but truth has {len(truth)} rows."
-        )
+    print("Evaluation Results")
+    print("------------------")
+    print(f"F1 Ideal: {f1_ideal:.4f}")
+    print(f"F1 Perturbed: {f1_perturbed:.4f}")
+    print(f"Robustness Gap: {robustness_gap:.4f}")
 
-    y_true = merged["target"].astype(int)
-    y_pred = merged["prediction"].astype(int)
+    return {
+        "f1_ideal": f1_ideal,
+        "f1_perturbed": f1_perturbed,
+        "robustness_gap": robustness_gap
+    }
 
-    acc = accuracy_score(y_true, y_pred)
-    f1 = f1_score(y_true, y_pred, average="macro")
-
-    print(f"Accuracy: {acc:.4f}")
-    print(f"Macro-F1: {f1:.4f}")
 
 if __name__ == "__main__":
     main()
