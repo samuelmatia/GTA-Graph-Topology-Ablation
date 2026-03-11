@@ -1,9 +1,8 @@
-# .github/scripts/process_submission.py
-import subprocess
 from pathlib import Path
+import subprocess
 
-# Repo root
-repo_root = Path(__file__).parent.parent.parent.resolve()
+# Resolve repo root from this script location
+repo_root = Path(__file__).parent.parent.parent.resolve()  # .github/scripts -> repo root
 
 def main():
     print("Decrypting submission...")
