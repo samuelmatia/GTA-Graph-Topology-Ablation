@@ -6,6 +6,7 @@ import subprocess
 import json
 import sys
 import time
+import os
 
 # Resolve repo root
 repo_root = Path(__file__).parent.parent.resolve()
@@ -17,7 +18,7 @@ from encryption.decrypt import decrypt_file
 SUBMISSIONS_DIR = repo_root / "submissions"
 LEADERBOARD_CSV = repo_root / "leaderboard/leaderboard.csv"
 
-def ensure_metadata(team_dir, submission_type="ideal"):
+def ensure_metadata(team_dir):
     """Create metadata.json in team directory if missing."""
     metadata_file = team_dir / "metadata.json"
     
@@ -26,9 +27,8 @@ def ensure_metadata(team_dir, submission_type="ideal"):
         print(f"DEBUG: Creating metadata.json for {team_dir.name}")
         metadata = {
             "team_name": team_dir.name,
-            "submission_time": "2026-03-11T20:00:00Z",
-            "description": f"Auto-generated metadata for {team_dir.name}",
-            "submission_type": submission_type
+            "submission_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "description": f"Auto-generated metadata for {team_dir.name}"
         }
         with open(metadata_file, "w") as f:
             json.dump(metadata, f, indent=2)
@@ -43,6 +43,20 @@ def ensure_metadata(team_dir, submission_type="ideal"):
             print(f"DEBUG: metadata.json contains valid JSON")
     else:
         print(f"DEBUG: metadata.json already exists for {team_dir.name}")
+        # Verify existing metadata is valid
+        try:
+            with open(metadata_file, 'r') as f:
+                json.load(f)
+            print(f"DEBUG: Existing metadata.json is valid")
+        except json.JSONDecodeError:
+            print(f"DEBUG: Existing metadata.json is invalid, recreating")
+            metadata = {
+                "team_name": team_dir.name,
+                "submission_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "description": f"Recreated metadata for {team_dir.name}"
+            }
+            with open(metadata_file, "w") as f:
+                json.dump(metadata, f, indent=2)
     
     return metadata_file
 
@@ -51,6 +65,7 @@ def get_leaderboard_data():
 
     print(f"DEBUG: Repo root: {repo_root}")
     print(f"DEBUG: Looking for submissions in: {SUBMISSIONS_DIR}")
+    print(f"DEBUG: TEST_LABELS_CSV environment variable: {os.environ.get('TEST_LABELS_CSV', 'NOT SET')}")
     
     if not SUBMISSIONS_DIR.exists():
         print("DEBUG: Submissions directory does not exist!")
@@ -85,7 +100,7 @@ def get_leaderboard_data():
         decrypt_file(pert_enc, pert_csv)
 
         # Verify files exist after decryption
-        print(f"DEBUG: After decryption - Files in team folder:", [f.name for f in team_dir.iterdir()])
+        print("DEBUG: After decryption - Files in team folder:", [f.name for f in team_dir.iterdir()])
 
         # Small delay to ensure file system is synced
         time.sleep(1)
@@ -104,6 +119,9 @@ def get_leaderboard_data():
             
             print(f"DEBUG: Ideal scoring stdout: {result.stdout}")
             print(f"DEBUG: Ideal scoring stderr: {result.stderr}")
+            
+            if result.stderr:
+                print(f"DEBUG: Ideal scoring warnings: {result.stderr}")
             
             ideal_scores = json.loads(result.stdout)
             print(f"DEBUG: Ideal scores parsed: {ideal_scores}")
@@ -132,6 +150,9 @@ def get_leaderboard_data():
             print(f"DEBUG: Perturbed scoring stdout: {result.stdout}")
             print(f"DEBUG: Perturbed scoring stderr: {result.stderr}")
             
+            if result.stderr:
+                print(f"DEBUG: Perturbed scoring warnings: {result.stderr}")
+            
             pert_scores = json.loads(result.stdout)
             print(f"DEBUG: Perturbed scores parsed: {pert_scores}")
             
@@ -155,7 +176,9 @@ def get_leaderboard_data():
     return leaderboard
 
 def update_leaderboard_csv():
+    print("DEBUG: Starting leaderboard update...")
     leaderboard_data = get_leaderboard_data()
+    
     if not leaderboard_data:
         print("No submissions found")
         return
