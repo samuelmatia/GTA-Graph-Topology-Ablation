@@ -4,10 +4,9 @@ import json
 from pathlib import Path
 import sys
 
-# Add parent directory to sys.path to allow importing leaderboard.calculate_scores
 sys.path.append(str(Path(__file__).parent.resolve()))
-from .calculate_scores import calculate_scores
-
+sys.path.append(str(Path(__file__).parent.parent.resolve()))  # add repo root
+from scripts.leaderboard.calculate_scores import calculate_scores
 
 
 def validate_metadata(submission_path: Path) -> None:
