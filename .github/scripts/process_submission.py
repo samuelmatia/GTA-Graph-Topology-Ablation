@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-# Add repo root to sys.path
+# Repo root
 repo_root = Path(__file__).parent.parent.resolve()
 sys.path.insert(0, str(repo_root))
 
@@ -15,13 +15,13 @@ def run_script(script_path: Path):
 
 def main():
     print("Decrypting submission...")
-    run_script(repo_root / "encryption/decrypt.py")
+    run_script(repo_root / "encryption" / "decrypt.py")  # <-- fixed path
 
     print("Scoring submission...")
-    run_script(repo_root / "leaderboard/score_submission.py")
+    run_script(repo_root / "leaderboard" / "score_submission.py")
 
     print("Updating leaderboard...")
-    run_script(repo_root / "leaderboard/update_leaderboard.py")
+    run_script(repo_root / "leaderboard" / "update_leaderboard.py")
 
 if __name__ == "__main__":
     main()
