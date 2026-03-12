@@ -112,7 +112,7 @@ Create a Python virtual environment and install dependencies:
 
 ```bash
 
-# Starter Code
+Starter Code
 A baseline GIN model is provided in starter_code/baseline.py. You can modify it or build your own model. The script:
 
 Loads the MUTAG dataset.
@@ -125,41 +125,37 @@ Generates predictions for both ideal and perturbed test graphs.
 
 Saves submission files in the required format.
 
-To run the base model
-```
+To run the baseline:
+
+bash
 cd starter_code
 python baseline.py
-
 This will create ideal_submission.csv and perturbed_submission.csv in the submissions/ folder (which is git‑ignored).
-```
 
-# Submission Procedure
-
+📤 Submission Procedure
 Submissions must be encrypted and placed inside a folder named after your team.
-```
+
 Step 1: Prepare your submission files
 Your CSV files must have the following format (example for 38 test graphs):
 
+csv
 graph_index,label
 160,1
 62,0
 48,0
 173,1
 ...
-
 ideal_submission.csv – predictions on clean test graphs.
 
 perturbed_submission.csv – predictions on perturbed test graphs.
-```
-```
-Step 2: Encrypt your files
 
+Step 2: Encrypt your files
 From the project root, run the encryption script:
 
+bash
 cd submissions
 python encrypt_submissions.py
 cd ..
-
 This script will:
 
 Look for ideal_submission.csv and perturbed_submission.csv in your team folder (e.g., submissions/MyTeam/).
@@ -170,10 +166,7 @@ Produce ideal.enc and perturbed.enc in the same folder.
 
 Only the .enc files should be committed; the raw .csv files remain local (they are git‑ignored).
 
-```
-```
 Step 3: Commit and push
-
 Fork the repository.
 
 Create a folder submissions/<YourTeamName>/ and place the .enc files inside.
@@ -186,9 +179,7 @@ Do not commit any raw .csv files.
 
 Ensure your team folder name does not contain spaces.
 
-```
 Step 4: Automatic evaluation
-
 Once the PR is opened, the automated workflow will:
 
 Decrypt your files (using the organiser’s private key, stored as a secret).
@@ -201,8 +192,7 @@ Update the leaderboard (only your best perturbed score is retained).
 
 The live leaderboard will reflect the new results within minutes.
 
-Repository Structure
-text
+📁 Repository Structure
 ```
 gnn-topology-ablation/
 │
@@ -250,8 +240,10 @@ gnn-topology-ablation/
 ├── README.md
 ├── leaderboard.md
 └── requirements.txt
+
 ```
-# Security Guarantee
+
+🔒 Security Guarantee
 Predictions are encrypted locally using a symmetric key, which is then encrypted with the organiser’s RSA public key.
 
 Only the organiser (with the corresponding private key stored as a GitHub secret) can decrypt the submissions.
@@ -260,14 +252,10 @@ Encrypted files are visible in the repository but completely unreadable without 
 
 This ensures blind evaluation – participants cannot see each other’s predictions, and the organiser cannot see them until after the submission deadline (if desired).
 
-#License
+📜 License
 This project is released under the MIT License. See the LICENSE file for details.
 
 Happy modeling! If you have any questions, please open an issue or contact the organisers.
-
-
-
-
 python -m venv venv
 source venv/bin/activate   # or `venv\Scripts\activate` on Windows
 pip install -r requirements.txt
