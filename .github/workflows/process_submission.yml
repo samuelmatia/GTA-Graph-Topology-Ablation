@@ -156,7 +156,7 @@ jobs:
       # 9️⃣ Create test labels file and run submission processing
       - name: Decrypt, Score, and Update Leaderboard
         env:
-          SUBMISSION_PRIVATE_KEY: ${{ secrets.SUBMISSION_PRIVATE_KEY }}
+          SUBMISSION_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           TEST_LABELS_CONTENT: ${{ secrets.TEST_LABELS_CSV }}
         run: |
           echo "Creating test labels file from secret..."
