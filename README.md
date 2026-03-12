@@ -192,9 +192,8 @@ Update the leaderboard (only your best perturbed score is retained).
 
 The live leaderboard will reflect the new results within minutes.
 
-```
-📁 Repository Structure
 
+📁 Repository Structure
 gnn-topology-ablation/
 │
 ├── .github/                     # GitHub Actions workflows
@@ -241,7 +240,7 @@ gnn-topology-ablation/
 ├── README.md
 ├── leaderboard.md
 └── requirements.txt
-```
+
 
 🔒 Security Guarantee
 Predictions are encrypted locally using a symmetric key, which is then encrypted with the organiser’s RSA public key.
