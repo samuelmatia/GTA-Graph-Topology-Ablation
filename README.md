@@ -155,11 +155,10 @@ graph_index,label
 .....
 .....
 
-```
-
-ideal_submission.csv – predictions on clean test graphs.
+ideal_submission.csv- predictions on clean test graphs.
 
 perturbed_submission.csv – predictions on perturbed test graphs.
+```
 
 **Step 2:** Encrypt your files
 
@@ -174,9 +173,9 @@ This script will:
 
 Look for ideal_submission.csv and perturbed_submission.csv in 'submissions' folder.
 
-1.   Encrypt them using the public key (encryption/public_key.pem).
+1.   Encrypt them using the public key (submissions/python encrypt_submissions.py).
 
-2.   Produce ideal.enc and perturbed.enc in the same folder (submissions/<Team_Name>/).
+2.   It will Produce ideal.enc and perturbed.enc in the same folder (submissions/<Team_Name>/*.enc).
 
 Only the .enc files should be committed; the raw .csv files remain local (they are git‑ignored).
 Note: Please dont forget to create submisions/<Team_Name>/  (two *enc files will be placed here)
@@ -186,8 +185,22 @@ Note: Please dont forget to create submisions/<Team_Name>/  (two *enc files will
 1.   Fork the repository.
 
 2.   Create a folder submissions/<YourTeamName>/ and place the .enc files inside.
+```
+project_root/
+├── encryption/
+│   ├── __init__.py
+│   └── encrypt.py           # contains encrypt_file function
+├── submissions/
+│   ├── sample_submission.csv
+│   ├── file1.csv
+│   ├── file2.csv
+│   └── team_name/           # <-- folder created by script
+│       ├── file1.csv.enc
+│       └── file2.csv.enc
+└── encrypt_submissions.py   # script that encrypts files
+```
 
-3.   Create a new branch, commit only the .enc files, and open a Pull Request (PR) against the main branch.
+4.   Create a new branch, commit only the .enc files, and open a Pull Request (PR) against the main branch.
 
 
 **Important:**
