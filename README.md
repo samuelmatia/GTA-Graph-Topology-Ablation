@@ -97,6 +97,21 @@ Edges correspond to chemical bonds
 
 Graph label indicates whether the molecule is mutagenic to Salmonella typhimurium or not.
 
+---
+
+## Data Split (Train/Test)
+The dataset is split into **70/30** with **stratification by class**:
+
+- `data/train/` : labeled graphs (70%)
+- `data/test/`  : unlabeled graphs (30%)
+
+Training labels are provided in:
+- `data/train_labels.csv` with columns:
+  - `filename`
+  - `target`
+
+---
+
 -----------------------
 **📊 Evaluation metrics:**
 ----------------------
@@ -199,7 +214,7 @@ git clone https://github.com/idrees11/gnn-topology-ablation.git
 pip install -r requirements.txt
 
 
-**Generate prediction files:**
+**Generate prediction files with your model:**
 
 submissions/ideal_submission.csv
 
@@ -208,7 +223,7 @@ submissions/perturbed_submission.csv
 **Format of these files should be**
 
 ```
-graph_index,target
+graph_index,label
 
 160,1
 62,0
