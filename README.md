@@ -9,6 +9,7 @@ Participants submit predictions for ideal and perturbed topology settings.
 All submissions are encrypted, automatically evaluated, and ranked on a public leaderboard.
 
 Repository hosted on GitHub.
+
 -------------------------------------------------------------------------------------------------------------
 🏆 View Live Leaderboard: [Open leaderboard](https://idrees11.github.io/GTA-Graph-Topology-Ablation_-GTA-/)
 --------------------------------------------------------------------------------------------------------------
